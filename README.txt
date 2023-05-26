@@ -1,1 +1,0 @@
-Camera holder for RaspiCam by Donald82 on Thingiverse: https://www.thingiverse.com/thing:2318794
