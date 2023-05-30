@@ -1,17 +1,21 @@
 import { executeQuery } from "../../database/database.js";
 import * as bcrypt from "https://deno.land/x/bcrypt@v0.4.1/mod.ts";
+import { renderFile } from "../../deps.js";
 const showMain = ({ render }) => {
   render("login.eta");
 };
 const dashboard=async({render,state})=>{
   const data={
     id:"",
-    name:""
+    name:"",
+    drivers:""
   }
   data.id=await state.session.get("user_id");
   let name=await executeQuery("SELECT username FROM users WHERE id=$id",{id:data.id});
-  console.log(name);
+  let driver=await executeQuery("SELECT name,on_duty,trips FROM drivers WHERE employer_email=(SELECT email FROM users WHERE id=$id)",{id:data.id});
+  console.log(driver);
   data.name=name.rows[0].username;
+  data.drivers=driver.rows;
   render("dashboard.eta",data);
 }
 const login=async({render,request,response,state})=>{
@@ -24,7 +28,8 @@ const login=async({render,request,response,state})=>{
   console.log(params.get("email"));
   console.log(params.get("pswd"));
   if (params.get("txt")!=null){
-    await executeQuery("INSERT INTO users(username,email,passwords) VALUES ($username,$email,$password)",{username:params.get("txt"),email:params.get("email"),password:await bcrypt.hash(params.get("pswd"))});
+    await executeQuery("INSERT INTO users(username,email,passwords) VALUES ($username,$email,$password)",
+    {username:params.get("txt"),email:params.get("email"),password:await bcrypt.hash(params.get("pswd"))});
     data.message="You are signed in! Please login now."
     render("login.eta",data);
   }
@@ -50,4 +55,17 @@ const login=async({render,request,response,state})=>{
     }
   }
 }
-export { showMain,dashboard,login };
+const Driver_status=async({params,render})=>{
+  const data={
+    trips:"",
+    name:""
+  }
+  let name=((params.name).replace('%','')).replace('20',' ');
+  data.name=name;
+  let trip=await executeQuery("SELECT * FROM trips WHERE name=$name",{name:name});
+  data.trips=trip.rows;
+  console.log(data.trips)
+  render("status.eta",data);
+  
+}
+export { showMain,dashboard,login,Driver_status };
