@@ -28,3 +28,39 @@ connectionPool = new Pool({
 After finishing the above steps in terminal, go to the location where app-launch.js are, and run the command:
     deno run --allow-read --allow-write --allow-env --allow-net --unstable app-launch.js
 And the application should start running on your localhost at port 7777.
+
+Prerequisites
+To use this project, you'll need:
+
+Python 3.6 or higher on both your computer and Raspberry Pi.
+A Raspberry Pi with GPIO (General Purpose Input Output) pins.
+A LED and resistor to connect to the Raspberry Pi's GPIO pin.
+MediaPipe Python library installed on your computer.
+OpenCV and Pillow Python libraries installed on your computer.
+RPi.GPIO Python library installed on your Raspberry Pi.
+Your Raspberry Pi and computer should be on the same network.
+Installation
+Clone the repository or download the Python scripts.
+Install the required Python libraries on your computer:
+shell
+Copy code
+pip install opencv-python mediapipe pillow
+Install the required Python libraries on your Raspberry Pi:
+
+
+pip install RPi.GPIO
+Usage
+Connect a LED to GPIO 8 (pin 24) of your Raspberry Pi through an appropriate resistor.
+Replace 'raspberry_pi_ip' and port in the scripts with the actual IP address and port number of your Raspberry Pi.
+Run the Raspberry Pi script on your Raspberry Pi:
+
+
+python blink.py
+python camera.py
+Run the computer script on your computer:
+
+python eyes_t.py
+The computer script will send a warning message to the Raspberry Pi over the network when the user's eyes are either not visible or closed for over 10 seconds. The Raspberry Pi will then blink the LED connected to its GPIO pin 8.
+
+Note
+This system may not be perfect in detecting the status of the user's eyes due to the complex nature of facial landmark detection. It may also be affected by the lighting conditions, the user's distance from the camera, and other factors. The system is meant to serve as a basic demonstration of using computer vision and networking with a Raspberry Pi, and may not be suitable for serious applications without further refinement and testing.
